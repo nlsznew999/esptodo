@@ -1,0 +1,16 @@
+{
+  "name": "team-task-kanban",
+  "version": "1.0.0",
+  "description": "Team Task Management and Personal Kanban Board System",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "keywords": ["kanban", "team", "todo", "task-management"],
+  "author": "TeamTask",
+  "license": "MIT"
+}

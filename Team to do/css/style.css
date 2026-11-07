@@ -1,0 +1,298 @@
+@import url('https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --font-sans: 'Prompt', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --primary: #4F46E5;
+  --primary-hover: #4338CA;
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --card-shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+}
+
+* {
+  font-family: var(--font-sans);
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #F8FAFC;
+  color: #1E293B;
+  transition: background-color 0.25s ease, color 0.25s ease;
+  min-height: 100vh;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #475569;
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #64748B;
+}
+
+/* Kanban Board Columns */
+.kanban-board-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: 1.25rem;
+  align-items: start;
+}
+
+@media (min-width: 1280px) {
+  .kanban-board-container {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.kanban-column {
+  background: #F1F5F9;
+  border-radius: 1rem;
+  border: 1px solid #E2E8F0;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 220px);
+  min-height: 480px;
+  transition: all 0.2s ease;
+}
+
+.dark .kanban-column {
+  background: #1E293B;
+  border-color: #334155;
+}
+
+.kanban-tasks-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-height: 120px;
+}
+
+.kanban-column.drag-over {
+  background-color: #EEF2FF;
+  border: 2px dashed #6366F1;
+}
+
+.dark .kanban-column.drag-over {
+  background-color: #1E1B4B;
+  border-color: #818CF8;
+}
+
+/* Task Card */
+.task-card {
+  background: #FFFFFF;
+  border-radius: 0.75rem;
+  border: 1px solid #E2E8F0;
+  box-shadow: var(--card-shadow);
+  padding: 0.875rem;
+  cursor: grab;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+  position: relative;
+  user-select: none;
+}
+
+.dark .task-card {
+  background: #0F172A;
+  border-color: #334155;
+  color: #F8FAFC;
+}
+
+.task-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--card-shadow-hover);
+  border-color: #CBD5E1;
+}
+
+.dark .task-card:hover {
+  border-color: #475569;
+}
+
+.task-card.dragging {
+  opacity: 0.4;
+  transform: scale(0.97) rotate(1deg);
+  border: 2px dashed #4F46E5;
+}
+
+/* Priority styling */
+.badge-priority-urgent {
+  background-color: #FFE4E6;
+  color: #E11D48;
+  border: 1px solid #FECDD3;
+}
+.badge-priority-high {
+  background-color: #FFEDD5;
+  color: #EA580C;
+  border: 1px solid #FED7AA;
+}
+.badge-priority-medium {
+  background-color: #FEF3C7;
+  color: #D97706;
+  border: 1px solid #FDE68A;
+}
+.badge-priority-low {
+  background-color: #F1F5F9;
+  color: #64748B;
+  border: 1px solid #E2E8F0;
+}
+
+.dark .badge-priority-urgent {
+  background-color: #4C0519;
+  color: #FDA4AF;
+  border-color: #881337;
+}
+.dark .badge-priority-high {
+  background-color: #431407;
+  color: #FDBA74;
+  border-color: #7C2D12;
+}
+.dark .badge-priority-medium {
+  background-color: #451A03;
+  color: #FCD34D;
+  border-color: #78350F;
+}
+.dark .badge-priority-low {
+  background-color: #334155;
+  color: #94A3B8;
+  border-color: #475569;
+}
+
+/* Deadline status */
+.badge-deadline-overdue {
+  background-color: #FEE2E2;
+  color: #DC2626;
+  font-weight: 600;
+  animation: pulse-subtle 2s infinite;
+}
+.badge-deadline-today {
+  background-color: #FEF3C7;
+  color: #B45309;
+  font-weight: 600;
+}
+.badge-deadline-upcoming {
+  background-color: #F1F5F9;
+  color: #475569;
+}
+.badge-deadline-done {
+  background-color: #DCFCE7;
+  color: #15803D;
+}
+
+.dark .badge-deadline-overdue {
+  background-color: #7F1D1D;
+  color: #FECACA;
+}
+.dark .badge-deadline-today {
+  background-color: #78350F;
+  color: #FDE68A;
+}
+.dark .badge-deadline-upcoming {
+  background-color: #1E293B;
+  color: #94A3B8;
+}
+.dark .badge-deadline-done {
+  background-color: #14532D;
+  color: #BBF7D0;
+}
+
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.75; }
+}
+
+/* Modal Animations */
+.modal-overlay {
+  background-color: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  transition: opacity 0.2s ease;
+}
+
+.modal-content {
+  animation: modalEnter 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalEnter {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Toast Notification */
+#toast-container {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  pointer-events: none;
+}
+
+.toast {
+  pointer-events: auto;
+  animation: toastSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transition: all 0.2s ease;
+}
+
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Status Column Accents */
+.column-status-todo {
+  border-top: 4px solid #64748B;
+}
+.column-status-in_progress {
+  border-top: 4px solid #3B82F6;
+}
+.column-status-review {
+  border-top: 4px solid #F59E0B;
+}
+.column-status-done {
+  border-top: 4px solid #10B981;
+}
+
+/* Progress bar animation */
+.progress-bar-fill {
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Member avatar badge */
+.avatar-circle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  border-radius: 9999px;
+  flex-shrink: 0;
+  text-transform: uppercase;
+}

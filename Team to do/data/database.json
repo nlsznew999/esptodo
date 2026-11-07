@@ -1,0 +1,43 @@
+﻿{
+    "members":  [
+                    {
+                        "id":  "mem-1794020330261",
+                        "name":  "Thanarak",
+                        "nickname":  "Palm",
+                        "role":  "Service",
+                        "email":  "palm@team.local",
+                        "color":  "#6366f1",
+                        "avatar":  "P"
+                    },
+                    {
+                        "id":  "mem-1794020342109",
+                        "name":  "Paripan",
+                        "nickname":  "B",
+                        "role":  "Technician",
+                        "email":  "b@team.local",
+                        "color":  "#6366f1",
+                        "avatar":  "B"
+                    },
+                    {
+                        "id":  "mem-1794020361060",
+                        "name":  "Naphat",
+                        "nickname":  "Khai",
+                        "role":  "Technician",
+                        "email":  "khai@team.local",
+                        "color":  "#6366f1",
+                        "avatar":  "K"
+                    },
+                    {
+                        "id":  "mem-1794020387484",
+                        "name":  "Nakarin",
+                        "nickname":  "New",
+                        "role":  "Project",
+                        "email":  "new@team.local",
+                        "color":  "#c202f7",
+                        "avatar":  "N"
+                    }
+                ],
+    "tasks":  [
+
+              ]
+}

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="th" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TeamTask - ระบบจัดการ To-Do List และคัมบังบอร์ดของทีม</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#EEF2FF',
+              100: '#E0E7FF',
+              500: '#6366F1',
+              600: '#4F46E5',
+              700: '#4338CA',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts: Prompt & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Prompt:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="min-h-full flex flex-col bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 transition-colors duration-200">
+
+  <!-- Top Navigation Header -->
+  <header class="sticky top-0 z-40 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 shadow-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16 gap-3">
+        
+        <!-- Brand Logo & Title -->
+        <div class="flex items-center gap-3 shrink-0">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white shadow-md shadow-indigo-500/20">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+            </svg>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="font-black text-lg text-slate-900 dark:text-white tracking-tight">TeamTask</span>
+              <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800">ทีม ทูดู</span>
+            </div>
+            <div class="flex items-center gap-2 mt-0.5">
+              <span id="server-status-badge">
+                <!-- Injected by app.js: Online/Offline sync status -->
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Center View Navigation Switcher -->
+        <div class="flex items-center bg-slate-100 dark:bg-slate-900/80 p-1 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs font-semibold">
+          <button 
+            id="tab-overview-btn" 
+            onclick="window.app.setView('overview')"
+            class="px-3.5 py-1.5 rounded-xl transition flex items-center gap-1.5"
+          >
+            <span>📊</span>
+            <span>ภาพรวมทีม</span>
+          </button>
+          <button 
+            id="tab-kanban-btn" 
+            onclick="window.app.setView('kanban')"
+            class="px-3.5 py-1.5 rounded-xl transition flex items-center gap-1.5"
+          >
+            <span>📋</span>
+            <span>บอร์ดส่วนตัว</span>
+          </button>
+          <button 
+            id="tab-deadlines-btn" 
+            onclick="window.app.setView('deadlines')"
+            class="px-3.5 py-1.5 rounded-xl transition flex items-center gap-1.5 hidden md:flex"
+          >
+            <span>📅</span>
+            <span>กำหนดส่ง</span>
+          </button>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="relative max-w-xs w-full hidden lg:block">
+          <input 
+            type="text" 
+            placeholder="ค้นหางาน, แท็ก, หรือชื่อทีมงาน..." 
+            oninput="window.app.handleSearchInput(this.value)"
+            class="w-full text-xs pl-8 pr-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white placeholder-slate-400 focus:outline-indigo-500"
+          />
+          <svg class="w-4 h-4 text-slate-400 absolute left-2.5 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+          </svg>
+        </div>
+
+        <!-- Action Tools Right -->
+        <div class="flex items-center gap-2">
+          <!-- Create Task Primary Button -->
+          <button 
+            onclick="window.app.openTaskModal()" 
+            class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-xs font-medium shadow-sm transition flex items-center gap-1.5"
+            title="สร้างงานใหม่ (Add Task)"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            <span class="hidden sm:inline">สร้างงาน</span>
+          </button>
+
+          <!-- Manage Members Button -->
+          <button 
+            onclick="window.app.openMemberModal()" 
+            class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs transition flex items-center gap-1.5"
+            title="จัดการสมาชิกในทีม"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+            </svg>
+          </button>
+
+          <!-- Data Settings Dropdown -->
+          <div class="relative group">
+            <button 
+              class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs transition"
+              title="สำรองและตั้งค่าข้อมูล"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+              </svg>
+            </button>
+            <div class="absolute right-0 mt-1 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 py-1 hidden group-hover:block z-50 text-xs">
+              <button onclick="window.app.exportData()" class="w-full text-left px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center gap-2">
+                <span>💾</span> <span>ส่งออกข้อมูล (JSON)</span>
+              </button>
+              <button onclick="window.app.triggerImport()" class="w-full text-left px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center gap-2">
+                <span>📂</span> <span>นำเข้าข้อมูล (JSON)</span>
+              </button>
+              <hr class="border-slate-100 dark:border-slate-700 my-1">
+              <button onclick="window.app.resetToDemo()" class="w-full text-left px-4 py-2 hover:bg-red-50 dark:hover:bg-red-950/60 text-red-600 dark:text-red-400 flex items-center gap-2">
+                <span>🔄</span> <span>รีเซ็ตเป็นข้อมูลตัวอย่าง</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Theme Toggle Button -->
+          <button 
+            id="theme-toggle-btn"
+            onclick="window.app.toggleTheme()" 
+            class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition"
+            title="สลับโหมดมืด / สว่าง"
+          >
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Secondary Subheader: Quick Member Switcher Bar -->
+      <div class="py-2.5 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-3 overflow-x-auto text-xs">
+        <div class="flex items-center gap-2 shrink-0">
+          <span class="text-slate-400 text-[11px] font-medium hidden sm:inline">เลือกสมาชิก:</span>
+          <div id="member-avatars-bar" class="flex items-center gap-1.5">
+            <!-- Injected by JS -->
+          </div>
+        </div>
+
+        <div class="text-[11px] text-slate-400 shrink-0 hidden md:block">
+          💡 เคล็ดลับ: ลากการ์ดงานเพื่อเปลี่ยนสถานะในบอร์ด Kanban
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main View Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div id="main-view-container">
+      <!-- Dynamic View Injected by app.js -->
+    </div>
+  </main>
+
+  <!-- Hidden File Input for JSON Import -->
+  <input type="file" id="import-file-input" accept=".json" class="hidden" onchange="window.app.handleImportFile(event)">
+
+  <!-- Modal Container -->
+  <div id="modal-container"></div>
+
+  <!-- Toast Notifications Container -->
+  <div id="toast-container"></div>
+
+  <!-- Application Scripts -->
+  <script src="js/sampleData.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
